@@ -24,10 +24,8 @@ app.use("/api/contact", contactRoutes);
 // Serve Uploaded Images
 app.use("/uploads", express.static("uploads"));
 
-//otp verify api
-//app.use("/api/auth",require("./routes/auth"));
-const resetPasswordRoutes = require("./routes/auth.js");
-app.use("/api", resetPasswordRoutes);
+const authRoutes = require("./routes/auth");
+app.use("/api/auth", authRoutes);  // 
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })

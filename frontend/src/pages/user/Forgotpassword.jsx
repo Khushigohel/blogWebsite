@@ -7,17 +7,26 @@ export default function ForgotPassword({ openLogin }) {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [otpSent, setOtpSent] = useState(false);
+  const [loading, setLoading] = useState(false);
 
+  // Step 1: Request OTP
   const requestOtp = async (e) => {
     e.preventDefault();
     setError("");
     setMessage("");
+    setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:5000/api/request-reset", {
+      // const res = await fetch("http://localhost:5000/api/request-reset", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify({ email }),
+      // });
+      const res= await fetch("http://localhost:5000/api/auth/send-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email }) // ✅ already correct
+        ,
       });
       const data = await res.json();
       if (!res.ok) {
@@ -29,20 +38,26 @@ export default function ForgotPassword({ openLogin }) {
     } catch {
       setError("Server error. Please try again.");
     }
+    setLoading(false);
   };
 
+  // Step 2: Reset Password using OTP
   const resetPassword = async (e) => {
     e.preventDefault();
     setError("");
     setMessage("");
+    setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:5000/api/reset-password-with-otp", {
+      const res = await fetch("http://localhost:5000/api/auth/reset-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, otp, newPassword }),
       });
       const data = await res.json();
+
+      console.log("RESET RESPONSE:", data);
+      
       if (!res.ok) {
         setError(data.msg || "Something went wrong");
       } else {
@@ -51,14 +66,20 @@ export default function ForgotPassword({ openLogin }) {
         setOtp("");
         setNewPassword("");
         setOtpSent(false);
+
+        // Optional: Auto go back to login after success
+        setTimeout(() => {
+          openLogin(); // Show login form again
+        }, 2000);
       }
     } catch {
       setError("Server error. Please try again.");
     }
+    setLoading(false);
   };
 
   return (
-    <div>
+    <div style={{ maxWidth: "400px", margin: "0 auto", padding: "1rem" }}>
       {!otpSent ? (
         <form onSubmit={requestOtp}>
           <input
@@ -71,8 +92,8 @@ export default function ForgotPassword({ openLogin }) {
           />
           {error && <p style={{ color: "red" }}>{error}</p>}
           {message && <p style={{ color: "green" }}>{message}</p>}
-          <button className="auth-button" type="submit">
-            Send OTP
+          <button className="auth-button" type="submit" disabled={loading}>
+            {loading ? "Sending..." : "Send OTP"}
           </button>
           <p>
             <button
@@ -86,6 +107,7 @@ export default function ForgotPassword({ openLogin }) {
         </form>
       ) : (
         <form onSubmit={resetPassword}>
+          <h2>Reset Password</h2>
           <input
             className="input-field"
             type="text"
@@ -104,8 +126,8 @@ export default function ForgotPassword({ openLogin }) {
           />
           {error && <p style={{ color: "red" }}>{error}</p>}
           {message && <p style={{ color: "green" }}>{message}</p>}
-          <button className="auth-button" type="submit">
-            Reset Password
+          <button className="auth-button" type="submit" disabled={loading}>
+            {loading ? "Resetting..." : "Reset Password"}
           </button>
         </form>
       )}
