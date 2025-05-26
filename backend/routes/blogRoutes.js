@@ -4,10 +4,10 @@ const upload = require("../middleware/upload"); // Multer middleware
 const router = express.Router();
 const path = require("path");
 
-// ✅ Serve uploaded images
+// Serve uploaded images
 router.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
-// ✅ Add blog with image
+// Add blog with image
 router.post("/add", upload.single("image"), async (req, res) => {
     try {
         const { title, description, websiteLink, authorName } = req.body;
@@ -29,7 +29,7 @@ router.post("/add", upload.single("image"), async (req, res) => {
     }
 });
 
-// ✅ Get all blogs
+// Get all blogs
 router.get("/", async (req, res) => {
     try {
         const blogs = await Blog.find().sort({ _id: -1 });
@@ -38,7 +38,7 @@ router.get("/", async (req, res) => {
         res.status(500).json({ success: false, message: "Failed to get blogs" });
     }
 });
-/// ✅ Place this above the dynamic `/:id` route
+// Place this above the dynamic `/:id` route
 router.get("/count", async (req, res) => {
     try {
       const count = await Blog.countDocuments();
@@ -79,7 +79,7 @@ router.put("/:id", upload.single("image"), async (req, res) => {
     }
   });
 
-// ✅ Delete blog by ID
+// Delete blog by ID
 router.delete("/:id", async (req, res) => {
     try {
         await Blog.findByIdAndDelete(req.params.id);

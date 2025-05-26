@@ -19,8 +19,8 @@ const Blog = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/blogs"); // Make sure your server is running
-        setBlogs(res.data.blogs); // ✅ fix: access the blogs array inside response
+        const res = await axios.get("http://localhost:5000/api/blogs"); 
+        setBlogs(res.data.blogs); // fix: access the blogs array inside response
         setLoading(false);
       } catch (err) {
         console.error("Failed to fetch blogs", err);

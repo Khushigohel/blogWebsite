@@ -85,7 +85,7 @@ const BlogDetails = () => {
             />
           )}
         </div>
-        {/* 💡 Render smartly split description */}
+        {/* Render smartly split description */}
         {renderDescription()}
 
         {blog.websiteLink && (

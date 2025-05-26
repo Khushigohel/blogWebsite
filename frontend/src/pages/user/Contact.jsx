@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../../index.css"; // Ensure this CSS file is linked
+import "../../index.css"; 
 import { FaEnvelope, FaPhone, FaMapMarkerAlt } from "react-icons/fa";
 import NavigationBar from "../../components/Navbar";
 import PageHeader from "../../components/PageHeader";
